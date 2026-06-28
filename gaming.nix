@@ -1,7 +1,7 @@
 #
 # copy of jovian.nix -- Gaming
 #
-{ config, pkgs, ...}: let
+{ config, pkgs, lib, ...}: let
   # Local user account for auto login
   # Separate and distinct from Steam login
   # Can be any name you like
@@ -48,15 +48,8 @@ in {
   jovian.steam = {
   	enable = true;
   	#autoStart = true;
-  	#user = "${gameuser}"; 	
-  };
-
-  services.displayManager = {
-  	defaultSession = "gamescope-wayland";
-  	autoLogin.user = "${gameuser}";
-  	autoLogin.enable = true;
-  };
-  
+  	user = "${gameuser}"; 	
+  };  
 
   # Automatically add every real user to the 'users' group so they have permissions
   users.groups.users.members = allRealUsers;
@@ -126,18 +119,6 @@ in {
   	capSysAdmin = true;
   	autoStart = true;
   };
-
-  #
-  # SDDM
-  #
-  /*
-  services.displayManager.sddm.settings = {
-    Autologin = {
-      Session = "gamescope-wayland.desktop";
-      User = "${gameuser}";
-    };
-  };
-  */
 
   environment.systemPackages = with pkgs; [
 	git

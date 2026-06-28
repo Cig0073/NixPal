@@ -11,6 +11,9 @@
       ./drivers.nix
       ./gaming.nix
       ./nixpal-modifications.nix
+      ./steam-switch.nix
+      ./B460M-APRO-wlanfix.nix
+      
     # ./niri.nix
     ];
 
@@ -18,7 +21,13 @@
   boot = {
 
     # Bootloader.
-    loader.systemd-boot.enable = true;
+    loader.limine = {
+      enable = true;
+	  style.interface.branding = "NixPal";
+	  style.wallpapers = [ ./dark-messiah-hl.jpg ];
+      efiSupport = true;
+    };
+
     loader.efi.canTouchEfiVariables = true;
 
     # Use latest kernel.
@@ -45,11 +54,6 @@
       "rd.udev.log_level=3"
       "rd.systemd.show_status=auto"
     ];
-
-    # Hide the OS choice for bootloaders.
-    # It's still possible to open the bootloader list by pressing any key
-    # It will just not appear on screen unless a key is pressed
-    loader.timeout = 0;
   };
 
   networking.hostName = "nixpal"; # Define your hostname.
@@ -80,6 +84,13 @@
     LC_TIME = "tr_TR.UTF-8";
   };
 
+  programs.fish = {
+    enable = true;
+    interactiveShellInit = ''
+      set fish_greeting # Disable greeting
+      fastfetch
+    '';
+  };
   # Enable the X11 windowing system.
   # You can disable this if you're only using the Wayland session.
   # services.xserver.enable = true;
@@ -121,6 +132,7 @@
     isNormalUser = true;
     description = "Cig0073";
     extraGroups = [ "networkmanager" "wheel" ];
+    shell = pkgs.fish;
     packages = with pkgs; [
       kdePackages.kate
     #  thunderbird
@@ -141,7 +153,9 @@
   	wget
   	micro-full
   	#kdePackages.plasma-mobile
+    tldr
   	kdePackages.partitionmanager
+  	fastfetch
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
