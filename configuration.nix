@@ -9,10 +9,9 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./drivers.nix
-      #./gaming-jovian.nix
+      ./fileystems.nix
       ./nixpal-modifications.nix
 #      ./steam-switch.nix
-      ./B460M-APRO-wlanfix.nix
       
     # ./niri.nix
     ];
