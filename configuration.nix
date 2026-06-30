@@ -8,8 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./drivers.nix
-      ./fileystems.nix
+      ./filesystems.nix
       ./nixpal-modifications.nix
 #      ./steam-switch.nix
       
@@ -147,6 +146,8 @@
       jellyfin-tui
     #  thunderbird
     ];
+    hashedPassword = "$6$nwdrlyxXsr/tOvwm$7ghcLX0QDdU5Pql.ogFnHGQI2ZR/Bfk3i4RQJVQmICMJikFof09mMiOlpsE0Lh5gIOdh5Biumtdue.kULGcxp1"; # <<<--- Generate your own initial hashed password
+
   };
 
   # Install firefox.
