@@ -9,23 +9,24 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./drivers.nix
-      ./gaming.nix
+      #./gaming-jovian.nix
       ./nixpal-modifications.nix
-      ./steam-switch.nix
+#      ./steam-switch.nix
       ./B460M-APRO-wlanfix.nix
       
     # ./niri.nix
     ];
 
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   boot = {
 
     # Bootloader.
-    loader.limine = {
+    loader.systemd-boot = {
       enable = true;
-	  style.interface.branding = "NixPal";
-	  style.wallpapers = [ ./dark-messiah-hl.jpg ];
-      efiSupport = true;
+	  #style.interface.branding = "NixPal";
+	  #style.wallpapers = [ ./dark-messiah-hl.jpg ];
+      #efiSupport = true;
     };
 
     loader.efi.canTouchEfiVariables = true;
@@ -153,6 +154,7 @@
   	wget
   	micro-full
   	#kdePackages.plasma-mobile
+	kdePackages.plasma-keyboard
     tldr
   	kdePackages.partitionmanager
   	fastfetch
