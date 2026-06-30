@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports =
@@ -17,16 +17,25 @@
     # ./niri.nix
     ];
 
+  specialisation.gaming.configuration = {
+      # 1. Inherit or import your Jovian setup on the fly
+      imports = [
+        inputs.jovian-nixos.nixosModules.default
+        ./gaming-jovian.nix
+        ];
+    };
+
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   boot = {
-
+	loader.systemd-boot.enable = false;
     # Bootloader.
-    loader.systemd-boot = {
+    loader.limine = {
       enable = true;
-	  #style.interface.branding = "NixPal";
-	  #style.wallpapers = [ ./dark-messiah-hl.jpg ];
-      #efiSupport = true;
+	  style.interface.branding = "NixPal";
+	  style.wallpapers = [ ./dark-messiah-hl.jpg ];
+      efiSupport = true;
+      maxGenerations = 3;
     };
 
     loader.efi.canTouchEfiVariables = true;
@@ -136,6 +145,7 @@
     shell = pkgs.fish;
     packages = with pkgs; [
       kdePackages.kate
+      jellyfin-tui
     #  thunderbird
     ];
   };

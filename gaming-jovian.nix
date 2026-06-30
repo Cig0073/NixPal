@@ -1,15 +1,11 @@
 #
 # copy of jovian.nix -- Gaming
 #
-{ config, pkgs, lib, ...}: let
+{ config, pkgs, lib, inputs, ...}: let
   # Local user account for auto login
   # Separate and distinct from Steam login
   # Can be any name you like
   gameuser = "gamer";
-  jovian-nixos = builtins.fetchGit {
-    url = "https://github.com/Jovian-Experiments/Jovian-NixOS";
-    ref = "development";
-  };
 
   # 1. Dynamically pull all usernames defined in your configuration
   # This filters out system users (like 'root', 'nobody', etc.) by checking their UID
@@ -39,12 +35,7 @@ in {
       text = builtins.trace "building the jovian configuration..." "";
     };
   };
-
-  #
-  # Imports
-  #
-  imports = [ "${jovian-nixos}/modules" ];
-
+  
   jovian.steam = {
   	enable = true;
   	autoStart = true;
@@ -59,15 +50,9 @@ in {
     dedicatedServer.openFirewall = true;
     extest.enable = true;
     extraCompatPackages = with pkgs; [ proton-ge-bin ];
-    gamescopeSession.enable = true;
+    #gamescopeSession.enable = true;
   };
-
-  programs.gamescope = {
-    enable = true;
-  	#enableWsi = true; not yet in the repos
-  	#capSysNice = true;
-  };
-
+  
   hardware.steam-hardware.enable = true;
 
   services.sunshine = {
@@ -78,7 +63,6 @@ in {
   };
 
   environment.systemPackages = with pkgs; [
-    git #needed to fetch jovian
   	lutris
   	ludusavi
   	mangohud
