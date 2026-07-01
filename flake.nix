@@ -1,12 +1,9 @@
 {
-
   description = "NixPal - Portable PC solution";
 
   inputs = {
   	nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
-
-	# Unstable channel specifically for cutting-edge Gamescope/Steam changes
-    #nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+	nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
   	
     # Jovian tracking development
     jovian-nixos = {
@@ -15,19 +12,25 @@
     };
   };
 
-  outputs = { self, nixpkgs, jovian-nixos, ... }@inputs:
-  let
-    lib = nixpkgs.lib;
-  in {
+  outputs = { self, nixpkgs, nixpkgs-unstable, jovian-nixos, ... }@inputs:
+  {
   	nixosConfigurations = {
-  	  nixpal = lib.nixosSystem {
+  	  nixpal = nixpkgs.lib.nixosSystem {
   		system = "x86_64-linux";
   		specialArgs = { inherit inputs; };
  		modules = [ 
  		  ./configuration.nix 
- 		];
+ 		  {
+ 		    specialisation.gaming.configuration = {
+ 		      # 1. Inherit or import your Jovian setup on the fly
+ 		      imports = [
+ 		        jovian-nixos.nixosModules.default
+ 	            ./gaming-jovian.nix
+      	        ];
+ 		    };
+ 		  }
+ 	    ];
   	  };
-  	};
+    };
   };
-
 }

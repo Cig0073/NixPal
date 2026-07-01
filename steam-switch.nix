@@ -9,11 +9,7 @@ let
       sleep 1
   
       # 2. Kill the gamescope compositor processes aggressively if they are hanging around
-      killall -9 gamescope steam 2>/dev/null || true
-  
-      # 3. Force loginctl to kill ALL active graphical sessions for your specific user.
-      # This bypasses the unreliability of $XDG_SESSION_ID inside nested sessions.
-      ${pkgs.systemd}/bin/loginctl terminate-user "${activeUser}"
+      systemctl --user exit
     '';
   # Build the package explicitly
   killSessionPackage = (pkgs.runCommand "kill-session-desktop" {} ''
@@ -47,10 +43,5 @@ in
   services.displayManager = {
     # Keep this here to satisfy Jovian's internal list lookup
     sessionPackages = [ killSessionPackage ];
-  };
-
-  jovian.steam = {
-  	autoStart = true;
-    desktopSession = "kill-session"; 
   };
 }

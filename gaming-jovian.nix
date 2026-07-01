@@ -1,46 +1,35 @@
 #
 # copy of jovian.nix -- Gaming
 #
-{ config, pkgs, lib, inputs, ...}: let
-  # Local user account for auto login
-  # Separate and distinct from Steam login
-  # Can be any name you like
-  gameuser = "gamer";
+{ config, pkgs, lib, inputs, ...}:
 
-  # 1. Dynamically pull all usernames defined in your configuration
-  # This filters out system users (like 'root', 'nobody', etc.) by checking their UID
-  allRealUsers = builtins.filter 
-    (username: 
-      let user = config.users.users.${username}; in
-      user.isNormalUser && username != "root"
-    ) 
-    (builtins.attrNames config.users.users);
-
-  # 2. Map over the users to generate tmpfiles rules for each one
-  generateTmpfilesRules = username: [
-    # Ensure Steam directory and compatibilitytools.d exist for the user
-    "d  /home/${username}/.local/share/Steam/compatibilitytools.d 0755 ${username} users - -"
-    "L+ /home/${username}/.local/share/Steam/compatibilitytools.d/proton-ge-bin - - - - ${pkgs.proton-ge-bin}"
-
-    # Link the user's SteamApps folder to the shared directory
-    "d  /home/${username}/.local/share/Steam 0755 ${username} users - -"
-    "L+ /home/${username}/.local/share/Steam/steamapps - - - - /var/lib/shared-steamapps"
+{
+/*
+  imports = [
+  	./steam-switch.nix
   ];
-
-  # Flatten the nested lists of rules into one giant list systemd can read
-  allUserTmpfilesRules = builtins.concatLists (map generateTmpfilesRules allRealUsers);
-in {
+*/
   system.activationScripts = {
     print-jovian = {
       text = builtins.trace "building the jovian configuration..." "";
     };
   };
+
+  # Create a custom session definition that drops to SDDM
+  environment.systemPackages = with pkgs; [    
+    lutris
+    ludusavi
+    mangohud
+  ];  
   
   jovian.steam = {
   	enable = true;
   	autoStart = true;
   	desktopSession = "plasma";
-  	user = "${gameuser}"; 	
+  	user = "cig0073";
+    environment = {
+      STEAM_EXTRA_COMPAT_TOOLS_PATHS = "${pkgs.proton-ge-bin}";
+    };
   };  
 
   programs.steam = {
@@ -61,36 +50,20 @@ in {
   	capSysAdmin = true;
   	autoStart = true;
   };
-
-  environment.systemPackages = with pkgs; [
-  	lutris
-  	ludusavi
-  	mangohud
-  ];
-
-  # Automatically add every real user to the 'users' group so they have permissions
-  users.groups.users.members = allRealUsers;
-
-  # Shared base directory rules + the dynamically generated user symlinks
-  systemd.tmpfiles.rules = [
-    # Create and enforce permissions on the shared base folder
-    "d /var/lib/shared-steamapps 2775 root users - -"
-    "z /var/lib/shared-steamapps 2775 root users - -"
-  ] ++ allUserTmpfilesRules;
   
   jovian.decky-loader.enable = true;
-  jovian.decky-loader.user = "${gameuser}";
-  jovian.devices.steamdeck.autoUpdate = true;
+  jovian.decky-loader.user = "cig0073";
+  #jovian.devices.steamdeck.autoUpdate = true;
   jovian.steamos.useSteamOSConfig = true;
   #jovian.devices.steamdeck.enable = true;
-  jovian.devices.steamdeck.enableGyroDsuService = true;
+  #jovian.devices.steamdeck.enableGyroDsuService = true;
    
 
   #
   # Services
   #
   # 20251117 - Disabled because of build failure and I don't need it.
-  services.orca.enable = false;
+  services.orca.enable = true;
 
   #
   # Steam
@@ -114,27 +87,5 @@ in {
       };
     };
     */
-  };
-
-  #
-  # Users
-  #
-  users = {
-    groups.${gameuser} = {
-      name = "${gameuser}";
-      gid = 10000;
-    };
-
-    # Generate hashed password: mkpasswd -m sha-512
-    # hashedPassword sets the initial password. Use `passwd` to change it.
-    users.${gameuser} = {
-      description = "${gameuser}";
-      extraGroups = ["gamemode" "networkmanager"];
-      group = "${gameuser}";
-      hashedPassword = "$6$nwdrlyxXsr/tOvwm$7ghcLX0QDdU5Pql.ogFnHGQI2ZR/Bfk3i4RQJVQmICMJikFof09mMiOlpsE0Lh5gIOdh5Biumtdue.kULGcxp1"; # <<<--- Generate your own initial hashed password
-      home = "/home/${gameuser}";
-      isNormalUser = true;
-      uid = 10000;
-    };
   };
 }

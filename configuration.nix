@@ -2,42 +2,41 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, inputs, pkgsUnstable, ... }:
 
 {
+
+  # this allows you to access `pkgsUnstable` anywhere in your config
+  _module.args.pkgsUnstable = import inputs.nixpkgs-unstable {
+    inherit (pkgs.stdenv.hostPlatform) system;
+    inherit (config.nixpkgs) config;
+  };
+
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./filesystems.nix
-      ./nixpal-modifications.nix
-#      ./steam-switch.nix
-      
+      ./nixpal-modifications.nix      
     # ./niri.nix
     ];
-
-  specialisation.gaming.configuration = {
-      # 1. Inherit or import your Jovian setup on the fly
-      imports = [
-        inputs.jovian-nixos.nixosModules.default
-        ./gaming-jovian.nix
-        ];
-    };
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   boot = {
 	loader.systemd-boot.enable = false;
+	loader.efi.canTouchEfiVariables = true;
     # Bootloader.
+    
     loader.limine = {
       enable = true;
 	  style.interface.branding = "NixPal";
 	  style.wallpapers = [ ./dark-messiah-hl.jpg ];
+	  style.graphicalTerminal.background = "11000000";
       efiSupport = true;
-      maxGenerations = 3;
+      maxGenerations = 10;
     };
-
-    loader.efi.canTouchEfiVariables = true;
-
+    
+    
     # Use latest kernel.
     kernelPackages = pkgs.linuxPackages_latest;
   
@@ -104,8 +103,17 @@
   # services.xserver.enable = true;
 
   # Enable the KDE Plasma Desktop Environment.
-  services.displayManager.sddm.enable = true;
+  services.displayManager.sddm = {
+  	enable = true;
+  	enableHidpi = true;
+  	wayland.enable = true;
+  };
   services.desktopManager.plasma6.enable = true;
+
+  services.displayManager.sessionPackages = [
+  	pkgsUnstable.kdePackages.plasma-bigscreen
+    pkgsUnstable.kdePackages.plasma-mobile
+  ];
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -158,17 +166,17 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #  wget
-    git
-  	wget
-  	micro-full
+    pkgs.git
+  	pkgs.wget
+  	pkgs.micro-full
   	#kdePackages.plasma-mobile
-	kdePackages.plasma-keyboard
-    tldr
-  	kdePackages.partitionmanager
-  	fastfetch
+	pkgs.kdePackages.plasma-keyboard
+    pkgs.tldr
+  	pkgs.kdePackages.partitionmanager
+  	pkgs.fastfetch
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
