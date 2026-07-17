@@ -20,12 +20,13 @@
     lutris
     ludusavi
     mangohud
+    #proton-ge-bin
   ];  
   
   jovian.steam = {
   	enable = true;
   	autoStart = true;
-  	desktopSession = "plasma";
+  	desktopSession = "plasma-bigscreen-wayland";
   	user = "cig0073";
     environment = {
       STEAM_EXTRA_COMPAT_TOOLS_PATHS = "${pkgs.proton-ge-bin}";
@@ -41,7 +42,7 @@
     extraCompatPackages = with pkgs; [ proton-ge-bin ];
     #gamescopeSession.enable = true;
   };
-  
+
   hardware.steam-hardware.enable = true;
 
   services.sunshine = {
@@ -50,6 +51,8 @@
   	capSysAdmin = true;
   	autoStart = true;
   };
+
+  services.sunshine-virt-display.enable = true;
   
   jovian.decky-loader.enable = true;
   jovian.decky-loader.user = "cig0073";
@@ -75,7 +78,6 @@
   #   high performance by default.
   programs.gamemode = {
     enable = true;
-    /*
     settings = {
       general = {
         renice = 10;
@@ -86,6 +88,5 @@
         amd_performance_level = "high";
       };
     };
-    */
   };
 }

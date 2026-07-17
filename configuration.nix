@@ -2,15 +2,9 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, inputs, pkgsUnstable, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
-
-  # this allows you to access `pkgsUnstable` anywhere in your config
-  _module.args.pkgsUnstable = import inputs.nixpkgs-unstable {
-    inherit (pkgs.stdenv.hostPlatform) system;
-    inherit (config.nixpkgs) config;
-  };
 
   imports =
     [ # Include the results of the hardware scan.
@@ -34,6 +28,28 @@
 	  style.graphicalTerminal.background = "11000000";
       efiSupport = true;
       maxGenerations = 10;
+      extraEntries = ''
+        /CachyOS (Default)
+            protocol: linux
+            path: boot():/d23ff62ee54a406481e70d30c8e777b4/linux-cachyos/vmlinuz-linux-cachyos
+            module_path: boot():/intel-ucode.img
+            module_path: boot():/d23ff62ee54a406481e70d30c8e777b4/linux-cachyos/initramfs-linux-cachyos
+            cmdline: root=UUID=1668713f-a2dd-4f83-8d98-5ab29edfc107 rw rootflags=subvol=@ quiet splash
+      
+        /CachyOS (Bore)
+            protocol: linux
+            path: boot():/d23ff62ee54a406481e70d30c8e777b4/linux-cachyos-bore/vmlinuz-linux-cachyos-bore
+            module_path: boot():/intel-ucode.img
+            module_path: boot():/d23ff62ee54a406481e70d30c8e777b4/linux-cachyos-bore/initramfs-linux-cachyos-bore
+            cmdline: root=UUID=1668713f-a2dd-4f83-8d98-5ab29edfc107 rw rootflags=subvol=@ quiet splash
+      
+        /CachyOS (LTS)
+            protocol: linux
+            path: boot():/d23ff62ee54a406481e70d30c8e777b4/linux-cachyos-lts/vmlinuz-linux-cachyos-lts
+            module_path: boot():/intel-ucode.img
+            module_path: boot():/d23ff62ee54a406481e70d30c8e777b4/linux-cachyos-lts/initramfs-linux-cachyos-lts
+            cmdline: root=UUID=1668713f-a2dd-4f83-8d98-5ab29edfc107 rw rootflags=subvol=@ quiet splash
+      '';
     };
     
     
@@ -111,8 +127,7 @@
   services.desktopManager.plasma6.enable = true;
 
   services.displayManager.sessionPackages = [
-  	pkgsUnstable.kdePackages.plasma-bigscreen
-    pkgsUnstable.kdePackages.plasma-mobile
+  	pkgs.kdePackages.plasma-bigscreen
   ];
 
   # Configure keymap in X11
@@ -177,6 +192,7 @@
     pkgs.tldr
   	pkgs.kdePackages.partitionmanager
   	pkgs.fastfetch
+  	pkgs.kdePackages.plasma-bigscreen
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
