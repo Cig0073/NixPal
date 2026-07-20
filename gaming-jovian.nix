@@ -52,7 +52,8 @@
   	autoStart = true;
   	settings = {
   	  upnp = "enabled";
-  	  origin_web_ui_allowed = "wan";
+  	  origin_pin_allowed = "lan";
+  	  origin_web_ui_allowed = "lan";
   	};
   };
 
