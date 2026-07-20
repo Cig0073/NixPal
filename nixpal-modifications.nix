@@ -6,7 +6,7 @@
 
   # Prevent the system from shutting down when the power button is pressed
   # This allows steampowerbuttond to handle the event instead
-  services.logind.powerKey = "ignore";
+  services.logind.settings.Login.HandlePowerKey = "ignore";
 
   # Hardware Event Rules (Udev)
   services.udev.extraRules = ''
