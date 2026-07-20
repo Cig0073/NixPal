@@ -50,6 +50,10 @@
   	openFirewall = true;
   	capSysAdmin = true;
   	autoStart = true;
+  	settings = {
+  	  upnp = "enabled";
+  	  origin_web_ui_allowed = "wan";
+  	};
   };
 
   services.sunshine-virt-display.enable = true;
