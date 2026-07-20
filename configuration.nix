@@ -193,6 +193,7 @@
   	pkgs.kdePackages.partitionmanager
   	pkgs.fastfetch
   	pkgs.kdePackages.plasma-bigscreen
+  	pkgs.helix
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

@@ -25,6 +25,7 @@
  		  inputs.nixkit.nixosModules.default
  		  ./configuration.nix 
  	      ./gaming-jovian.nix
+ 	      ./sshd-inhibit-suspend.nix
  	    ];
   	  };
     };
