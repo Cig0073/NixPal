@@ -52,7 +52,7 @@
   	autoStart = true;
   	settings = {
   	  upnp = "enabled";
-  	  csrf_allowed_origins = "https://192.168.0.17"
+  	  csrf_allowed_origins = "https://192.168.0.17";
   	  origin_pin_allowed = "lan";
   	  origin_web_ui_allowed = "lan";
   	};
