@@ -16,7 +16,7 @@
   fileSystems."/nix" = {
     device = "/dev/disk/by-uuid/1668713f-a2dd-4f83-8d98-5ab29edfc107";
     fsType = "btrfs";
-    options = [ "subvol=@nixos_nix" "compress=zstd" "noatime" ];
+    options = [ "subvol=@nixos_nix" "compress=zstd" ];
   };
 
   # The persistent subvolume containing actual state, configs, and user data
@@ -24,9 +24,13 @@
     device = "/dev/disk/by-uuid/1668713f-a2dd-4f83-8d98-5ab29edfc107";
     fsType = "btrfs";
     neededForBoot = true; # Critical: NixOS needs this mounted before loading the rest of the OS
-    options = [ "subvol=@nixos_persistent" "compress=zstd" "noatime" ];
+    options = [ "subvol=@nixos_persistent" "compress=zstd" ];
   };
-
+  fileSystems."/home" = {
+    device = "/dev/disk/by-uuid/1668713f-a2dd-4f83-8d98-5ab29edfc107";
+    fsType = "btrfs";
+    options = [ "subvol=@home" "compress=zstd" ];
+  };
   # Your shared, existing EFI boot partition
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/16C5-9FBB";
@@ -35,7 +39,6 @@
   };
 
   # Bind mounts to redirect heavy or stateful folders straight to Btrfs persistence
-  fileSystems."/home" = { device = "/persistent/home"; fsType = "none"; options = [ "bind" ]; };
   fileSystems."/var/lib" = { device = "/persistent/var/lib"; fsType = "none"; options = [ "bind" ]; };
   fileSystems."/var/log" = { device = "/persistent/var/log"; fsType = "none"; options = [ "bind" ]; };
 

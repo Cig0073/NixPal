@@ -26,7 +26,7 @@
   jovian.steam = {
   	enable = true;
   	autoStart = true;
-  	desktopSession = "plasma-bigscreen-wayland";
+  	desktopSession = "plasma";
   	user = "cig0073";
     environment = {
       STEAM_EXTRA_COMPAT_TOOLS_PATHS = "${pkgs.proton-ge-bin}";
@@ -52,7 +52,7 @@
   	autoStart = true;
   	settings = {
   	  upnp = "enabled";
-  	  csrf_allowed_origins = "https://192.168.0.17";
+  	  csrf_allowed_origins = "https://192.168.0.12";
   	  origin_pin_allowed = "lan";
   	  origin_web_ui_allowed = "lan";
   	};

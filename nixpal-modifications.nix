@@ -1,6 +1,6 @@
 # /etc/nixos/configuration.nix
 
-{ ... }:
+{ pkgs, ... }:
 
 {
 
@@ -27,4 +27,14 @@
     ACTION=="add|bind", SUBSYSTEM=="usb", DRIVERS=="btusb", ATTR{power/wakeup}="enabled"
     ACTION=="add|bind", SUBSYSTEM=="usb", ATTR{bInterfaceClass}=="e0", ATTR{bInterfaceSubClass}=="01", ATTR{bInterfaceProtocol}=="01", ATTR{power/wakeup}="enabled"
   '';
+  # Disable USB wakeup right before poweroff/shutdown (leaves suspend untouched)
+  systemd.services.disable-usb-wakeup-on-poweroff = {
+    description = "Disable USB wakeup before poweroff to prevent instant reboot";
+    wantedBy = [ "final.target" ];
+    before = [ "final.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.bash}/bin/bash -c 'for dev in /sys/bus/usb/devices/*/power/wakeup; do echo disabled > \"$dev\" 2>/dev/null || true; done'";
+    };
+  };
 }
