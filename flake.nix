@@ -28,10 +28,10 @@
    	  	  jovian-nixos.nixosModules.default
    	  	  chaotic.nixosModules.default
    	  	  inputs.nixkit.nixosModules.default
+   	      #./bigscreen-workaround.nix
    	  	  ./configuration.nix 
    	      ./gaming-jovian.nix
    	      ./sshd-inhibit-suspend.nix
-   	      ./bigscreen-workaround.nix
  	      ];
   	  };
     };

@@ -28,28 +28,6 @@
 	  style.graphicalTerminal.background = "11000000";
       efiSupport = true;
       maxGenerations = 10;
-      extraEntries = ''
-        /CachyOS (Default)
-            protocol: linux
-            path: boot():/d23ff62ee54a406481e70d30c8e777b4/linux-cachyos/vmlinuz-linux-cachyos
-            module_path: boot():/intel-ucode.img
-            module_path: boot():/d23ff62ee54a406481e70d30c8e777b4/linux-cachyos/initramfs-linux-cachyos
-            cmdline: root=UUID=1668713f-a2dd-4f83-8d98-5ab29edfc107 rw rootflags=subvol=@ quiet splash
-      
-        /CachyOS (Bore)
-            protocol: linux
-            path: boot():/d23ff62ee54a406481e70d30c8e777b4/linux-cachyos-bore/vmlinuz-linux-cachyos-bore
-            module_path: boot():/intel-ucode.img
-            module_path: boot():/d23ff62ee54a406481e70d30c8e777b4/linux-cachyos-bore/initramfs-linux-cachyos-bore
-            cmdline: root=UUID=1668713f-a2dd-4f83-8d98-5ab29edfc107 rw rootflags=subvol=@ quiet splash
-      
-        /CachyOS (LTS)
-            protocol: linux
-            path: boot():/d23ff62ee54a406481e70d30c8e777b4/linux-cachyos-lts/vmlinuz-linux-cachyos-lts
-            module_path: boot():/intel-ucode.img
-            module_path: boot():/d23ff62ee54a406481e70d30c8e777b4/linux-cachyos-lts/initramfs-linux-cachyos-lts
-            cmdline: root=UUID=1668713f-a2dd-4f83-8d98-5ab29edfc107 rw rootflags=subvol=@ quiet splash
-      '';
     };
     
     
@@ -162,7 +140,7 @@
   users.users."cig0073" = {
     isNormalUser = true;
     description = "Cig0073";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "video" "input" "uinput" ];
     shell = pkgs.fish;
     packages = with pkgs; [
       kdePackages.kate
@@ -181,19 +159,18 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = [
+  environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #  wget
-    pkgs.git
-  	pkgs.wget
-  	pkgs.micro-full
-  	#kdePackages.plasma-mobile
-	pkgs.kdePackages.plasma-keyboard
-    pkgs.tldr
-  	pkgs.kdePackages.partitionmanager
-  	pkgs.fastfetch
-  	pkgs.kdePackages.plasma-bigscreen
-  	pkgs.helix
+    git
+  	wget
+  	micro-full
+  	kdePackages.plasma-bigscreen
+    kdePackages.plasma-keyboard
+    tldr
+  	kdePackages.partitionmanager
+  	fastfetch
+  	helix
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

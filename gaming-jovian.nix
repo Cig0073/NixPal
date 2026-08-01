@@ -26,10 +26,10 @@
   jovian.steam = {
   	enable = true;
   	autoStart = true;
-  	desktopSession = "plasma";
+  	desktopSession = "plasma-bigscreen-wayland";
   	user = "cig0073";
     environment = {
-      STEAM_EXTRA_COMPAT_TOOLS_PATHS = "${pkgs.proton-ge-bin}";
+      STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/run/current-system/sw/share/steam/compatibilitytools.d";
     };
   };  
 
@@ -39,7 +39,7 @@
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     extest.enable = true;
-    extraCompatPackages = with pkgs; [ proton-ge-bin ];
+    extraCompatPackages = with pkgs; [ proton-ge-bin proton-cachyos ];
     #gamescopeSession.enable = true;
   };
 
